@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+
+import BookingModal from "../../components/BookingModal/BookingModal";
 import {
   FaCar,
   FaMapMarkerAlt,
@@ -16,6 +18,7 @@ const VehicleDetails = () => {
   const { id } = useParams();
 
   const [vehicle, setVehicle] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     axiosSecure
@@ -116,9 +119,18 @@ const VehicleDetails = () => {
             </div>
 
             <div className="mt-8">
-              <button className="btn btn-primary btn-lg w-full hover:scale-[1.02] transition-transform duration-300">
+              <button
+                onClick={() => setShowModal(true)}
+                className="btn btn-primary btn-lg w-full hover:scale-[1.02] transition-transform duration-300"
+              >
                 🚗 Book Now
               </button>
+              {showModal && (
+                <BookingModal
+                  vehicle={vehicle}
+                  onClose={() => setShowModal(false)}
+                />
+              )}
             </div>
           </div>
         </div>
