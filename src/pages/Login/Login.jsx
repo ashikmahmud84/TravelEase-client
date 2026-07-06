@@ -1,13 +1,18 @@
+import { Link, useLocation, useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
-import { useNavigate } from "react-router";
 
 const Login = () => {
   const { loginUser, googleSignIn } = useAuth();
-  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Private Route থেকে আসলে আগের Page-এ ফিরে যাবে
+  const from = location.state?.from?.pathname || "/";
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     const form = e.target;
@@ -15,41 +20,36 @@ const Login = () => {
     const email = form.email.value;
     const password = form.password.value;
 
-    loginUser(email, password)
-      .then((result) => {
-        console.log(result.user);
+    try {
+      await loginUser(email, password);
 
-        toast.success("Login Successful");
-        
-        navigate("/");
+      toast.success("Login Successful");
 
-        form.reset();
-      })
-      .catch((error) => {
-        console.log(error);
+      form.reset();
 
-        toast.error(error.message);
-      });
+      navigate(from, { replace: true });
+    } catch (error) {
+      toast.error(error.message.replace("Firebase:", ""));
+    }
   };
 
-  const handleGoogleLogin = () => {
-    googleSignIn()
-      .then((result) => {
-        console.log(result.user);
+  const handleGoogleLogin = async () => {
+    try {
+      await googleSignIn();
 
-        toast.success("Google Login Successful");
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
+      toast.success("Google Login Successful");
 
-        toast.error(error.message);
-      });
+      navigate(from, { replace: true });
+    } catch (error) {
+      toast.error(error.message.replace("Firebase:", ""));
+    }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 shadow-lg p-8 rounded-xl">
-      <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
+    <div className="max-w-md mx-auto my-12 shadow-xl rounded-xl bg-base-100 p-8">
+      <h2 className="text-3xl font-bold text-center mb-6">
+        Welcome Back
+      </h2>
 
       <form onSubmit={handleLogin}>
         <input
@@ -64,9 +64,18 @@ const Login = () => {
           type="password"
           name="password"
           placeholder="Password"
-          className="input input-bordered w-full mb-4"
+          className="input input-bordered w-full mb-2"
           required
         />
+
+        <div className="text-right mb-4">
+          <button
+            type="button"
+            className="text-primary hover:underline text-sm"
+          >
+            Forgot Password?
+          </button>
+        </div>
 
         <button type="submit" className="btn btn-primary w-full">
           Login
@@ -75,10 +84,23 @@ const Login = () => {
 
       <div className="divider">OR</div>
 
-      <button onClick={handleGoogleLogin} className="btn btn-outline w-full">
+      <button
+        onClick={handleGoogleLogin}
+        className="btn btn-outline w-full"
+      >
         <FaGoogle />
         Continue with Google
       </button>
+
+      <p className="text-center mt-6">
+        Don't have an account?{" "}
+        <Link
+          to="/register"
+          className="text-primary font-semibold hover:underline"
+        >
+          Register
+        </Link>
+      </p>
     </div>
   );
 };

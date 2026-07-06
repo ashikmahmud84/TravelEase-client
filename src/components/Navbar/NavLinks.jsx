@@ -26,17 +26,7 @@ const NavLinks = () => {
         </NavLink>
       </li>
 
-      <li>
-        <NavLink to="/my-vehicles" className={navLinkClass}>
-          My Vehicles
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink to="/my-bookings" className={navLinkClass}>
-          My Bookings
-        </NavLink>
-      </li>
+      
     </>
   );
 };
