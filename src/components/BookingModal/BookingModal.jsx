@@ -1,21 +1,67 @@
+import { toast } from "react-hot-toast";
+import axiosSecure from "../../lib/axios";
 import useAuth from "../../hooks/useAuth";
 
 const BookingModal = ({ vehicle, onClose }) => {
   const { user } = useAuth();
+  console.log(user);
+
+  const handleBooking = (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+
+    const bookingDate = form.bookingDate.value;
+    const totalDays = parseInt(form.totalDays.value);
+    const note = form.note.value;
+
+    const bookingData = {
+      vehicleId: vehicle._id,
+      vehicleName: vehicle.vehicleName,
+      coverImage: vehicle.coverImage,
+      category: vehicle.category,
+      location: vehicle.location,
+      ownerName: vehicle.ownerName,
+      ownerEmail: vehicle.ownerEmail,
+      pricePerDay: vehicle.pricePerDay,
+
+      userName: user.displayName,
+      userEmail: user.email,
+
+      bookingDate,
+      totalDays,
+      note,
+
+      status: "Pending",
+      createdAt: new Date(),
+    };
+    axiosSecure
+      .post("/bookings", bookingData)
+      .then((res) => {
+        if (res.data.insertedId) {
+          toast.success("Booking Successful");
+
+          form.reset();
+
+          onClose();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+
+        toast.error("Booking Failed");
+      });
+  };
 
   return (
     <dialog className="modal modal-open">
       <div className="modal-box max-w-2xl">
+        <h3 className="text-3xl font-bold mb-6 text-center">Book Vehicle</h3>
 
-        <h3 className="text-3xl font-bold mb-6 text-center">
-          Book Vehicle
-        </h3>
-
-        <form>
-
+        <form onSubmit={handleBooking}>
           <div className="grid md:grid-cols-2 gap-4">
-
             {/* Vehicle Name */}
+
             <div>
               <label className="label">
                 <span className="label-text">Vehicle Name</span>
@@ -30,6 +76,7 @@ const BookingModal = ({ vehicle, onClose }) => {
             </div>
 
             {/* Price */}
+
             <div>
               <label className="label">
                 <span className="label-text">Price Per Day</span>
@@ -44,6 +91,7 @@ const BookingModal = ({ vehicle, onClose }) => {
             </div>
 
             {/* User Name */}
+
             <div>
               <label className="label">
                 <span className="label-text">Your Name</span>
@@ -58,6 +106,7 @@ const BookingModal = ({ vehicle, onClose }) => {
             </div>
 
             {/* User Email */}
+
             <div>
               <label className="label">
                 <span className="label-text">Your Email</span>
@@ -72,6 +121,7 @@ const BookingModal = ({ vehicle, onClose }) => {
             </div>
 
             {/* Booking Date */}
+
             <div>
               <label className="label">
                 <span className="label-text">Booking Date</span>
@@ -79,11 +129,14 @@ const BookingModal = ({ vehicle, onClose }) => {
 
               <input
                 type="date"
+                name="bookingDate"
+                required
                 className="input input-bordered w-full"
               />
             </div>
 
             {/* Total Days */}
+
             <div>
               <label className="label">
                 <span className="label-text">Total Days</span>
@@ -91,48 +144,39 @@ const BookingModal = ({ vehicle, onClose }) => {
 
               <input
                 type="number"
+                name="totalDays"
+                required
                 placeholder="Enter total days"
                 className="input input-bordered w-full"
               />
             </div>
-
           </div>
 
           {/* Note */}
+
           <div className="mt-4">
             <label className="label">
               <span className="label-text">Special Note</span>
             </label>
 
             <textarea
+              name="note"
               className="textarea textarea-bordered w-full"
               rows="4"
               placeholder="Write something..."
             ></textarea>
           </div>
 
-          {/* Buttons */}
           <div className="modal-action">
-
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn"
-            >
+            <button type="button" onClick={onClose} className="btn">
               Cancel
             </button>
 
-            <button
-              type="submit"
-              className="btn btn-primary"
-            >
+            <button type="submit" className="btn btn-primary">
               Confirm Booking
             </button>
-
           </div>
-
         </form>
-
       </div>
     </dialog>
   );
