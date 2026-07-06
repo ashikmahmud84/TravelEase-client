@@ -2,14 +2,8 @@ import { Link } from "react-router";
 import Swal from "sweetalert2";
 
 const MyVehicleRow = ({ vehicle, index, handleDelete }) => {
-  const {
-    _id,
-    coverImage,
-    vehicleName,
-    category,
-    pricePerDay,
-    availability,
-  } = vehicle;
+  const { _id, coverImage, vehicleName, category, pricePerDay, availability } =
+    vehicle;
 
   const handleRemove = () => {
     Swal.fire({
@@ -39,38 +33,32 @@ const MyVehicleRow = ({ vehicle, index, handleDelete }) => {
         />
       </td>
 
-      <td className="font-semibold">{vehicleName}</td>
+      <td className="font-semibold">{vehicle.vehicleName}</td>
 
       <td>{category}</td>
 
-      <td>৳ {pricePerDay}</td>
+      <td className="font-bold text-primary">৳ {vehicle.pricePerDay}</td>
 
       <td>
         <span
           className={`badge ${
-            availability === "Available"
+            vehicle.availability === "Available"
               ? "badge-success"
               : "badge-error"
           }`}
         >
-          {availability}
+          {vehicle.availability}
         </span>
       </td>
 
       <td>
-        <Link
-          to={`/update/${_id}`}
-          className="btn btn-sm btn-info"
-        >
+        <Link to={`/update/${_id}`} className="btn btn-sm btn-info">
           Update
         </Link>
       </td>
 
       <td>
-        <button
-          onClick={handleRemove}
-          className="btn btn-sm btn-error"
-        >
+        <button onClick={handleRemove} className="btn btn-sm btn-error">
           Delete
         </button>
       </td>

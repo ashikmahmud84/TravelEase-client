@@ -37,14 +37,13 @@ const MyVehicles = () => {
         if (res.data.deletedCount > 0) {
           Swal.fire({
             icon: "success",
-            title: "Vehicle Deleted Successfully",
-            timer: 1500,
+            title: "Vehicle Deleted!",
+            text: "The vehicle has been removed successfully.",
+            timer: 1800,
             showConfirmButton: false,
           });
 
-          const remaining = vehicles.filter(
-            (vehicle) => vehicle._id !== id
-          );
+          const remaining = vehicles.filter((vehicle) => vehicle._id !== id);
 
           setVehicles(remaining);
         }
@@ -60,58 +59,52 @@ const MyVehicles = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-5 py-10">
+      <h2 className="text-4xl font-bold text-center mb-8">My Vehicles</h2>
 
-      <h2 className="text-4xl font-bold text-center mb-8">
-        My Vehicles
-      </h2>
+      <p className="text-center text-gray-500 mt-2">
+        Total Vehicles:{" "}
+        <span className="font-bold text-primary">{vehicles.length}</span>
+      </p>
 
       {vehicles.length === 0 ? (
         <div className="text-center py-20">
+          <h1 className="text-6xl">🚗</h1>
 
-          <h2 className="text-3xl font-bold">
-            No Vehicle Found
-          </h2>
+          <h2 className="text-3xl font-bold mt-4">No Vehicle Found</h2>
 
           <p className="text-gray-500 mt-3">
             You haven't added any vehicle yet.
           </p>
-
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="bg-base-100 rounded-xl shadow-lg p-5 overflow-x-auto">
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Image</th>
+                  <th>Vehicle</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Update</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
 
-          <table className="table">
-
-            <thead>
-
-              <tr>
-                <th>#</th>
-                <th>Image</th>
-                <th>Vehicle</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Update</th>
-                <th>Delete</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {vehicles.map((vehicle, index) => (
-                <MyVehicleRow
-                  key={vehicle._id}
-                  vehicle={vehicle}
-                  index={index}
-                  handleDelete={handleDelete}
-                />
-              ))}
-
-            </tbody>
-
-          </table>
-
+              <tbody>
+                {vehicles.map((vehicle, index) => (
+                  <MyVehicleRow
+                    key={vehicle._id}
+                    vehicle={vehicle}
+                    index={index}
+                    handleDelete={handleDelete}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
